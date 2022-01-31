@@ -1,0 +1,24 @@
+name: SST Update
+description: Update SST and CDK versions. Runs the `sst update` command and commits the results. Requires that `@serverless-stack/cli` be installed as a dependency.
+inputs:
+  version:
+    description: Target version to which tools should be updated.
+    required: false
+    default: latest
+  working-directory:
+    description: Working directory for this action
+    required: false
+    default: ./
+runs:
+  using: composite
+  steps:
+    - name: Update SST to ${{ inputs.version }}
+      run: npm exec --package @serverless-stack/cli --no --offline sst update ${{ inputs.version }}
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+    - name: Commit Updates
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Update SST to ${{ inputs.version }} and sync AWS CDK [actions skip]
+        file_pattern: >
+          "${{ inputs.working-directory }}package.json ${{ inputs.working-directory }}package-lock.json ${{ inputs.working-directory }}yarn.lock"
