@@ -14,6 +14,7 @@ runs:
   steps:
     - uses: actions/checkout@master
       with:
+        ref: ${{ github.head_ref }}
         fetch-depth: 2
 
     - name: Get last commit message
@@ -32,7 +33,7 @@ runs:
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: |
-          [dependabot skip] ${{ steps.last-commit-message.outputs.msg }}
-        # commit_options: "--amend --no-edit"
-        # push_options: "--force"
+          ${{ steps.last-commit-message.outputs.msg }}
+        commit_options: "--amend --no-edit"
+        push_options: "--force"
         skip_fetch: true
